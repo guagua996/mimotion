@@ -33,6 +33,15 @@ def get_min_max_by_time(hour=None, minute=None):
     return int(time_rate * min_step), int(time_rate * max_step)
 
 
+def get_step_range():
+    min_step = get_int_value_default(config, 'MIN_STEP', 18000)
+    max_step = get_int_value_default(config, 'MAX_STEP', 25000)
+    use_time_scaling = str(config.get('USE_TIME_SCALING', 'True')).lower() == 'true'
+    if use_time_scaling:
+        return get_min_max_by_time()
+    return min_step, max_step
+
+
 # 虚拟ip地址
 def fake_ip():
     # 随便找的国内IP段：223.64.0.0 - 223.117.255.255
@@ -314,7 +323,7 @@ if __name__ == "__main__":
         if users is None or passwords is None:
             print("未正确配置账号密码，无法执行")
             exit(1)
-        min_step, max_step = get_min_max_by_time()
+        min_step, max_step = get_step_range()
         use_concurrent = config.get('USE_CONCURRENT')
         if use_concurrent is not None and use_concurrent == 'True':
             use_concurrent = True
